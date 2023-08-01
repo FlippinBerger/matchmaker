@@ -1,11 +1,10 @@
-use rdnit::game::Game;
-use rdnit::player::Player;
-
-// TODO add some command line parsing here and then put the drivers for each path
-// as a separate run somewhere in lib
+use rdnit::run;
 
 fn main() {
-    let g = Game{players: vec![Player{mmr: 100, name: String::from("chris"), streak: -1}]};
+    run();
 
-    println!("Length: {}", g.players.len());
+    // TODO
+    // .5 select the desired matchmaking service with command line args
+    // 1. run the matchmaking service selected
+    // 2. run the player service that simulates players queueing themselves up
 }
