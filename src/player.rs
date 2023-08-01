@@ -9,14 +9,14 @@ pub struct Player {
     pub streak: i32,
 }
 
-pub fn spawn_players(sender: Sender<Player>) {
+pub fn spawn_players(tx: Sender<Player>) {
    let p = Player {
         mmr: 1000,
         name: String::from("flippin"),
         streak: 6,
     };
 
-    if let Err(e) = sender.send(p) {
+    if let Err(e) = tx.send(p) {
         println!("Fucked up the send: {e}");
     }
 }

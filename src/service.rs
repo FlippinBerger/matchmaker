@@ -2,6 +2,7 @@ use std::sync::mpsc::Receiver;
 
 use crate::game::Game;
 use crate::player::Player;
+use crate::stats::Stats;
 
 pub trait Matchmaker {
     /// matchmake runs the matchmaking algorithm for the
@@ -12,15 +13,17 @@ pub trait Matchmaker {
 
 #[derive(Debug)]
 pub struct FastestMatchmaker {
-    receiver: Receiver<Player>,
     pub games: Vec<Game>,
+    rx: Receiver<Player>,
+    pub stats: Stats,
 }
 
 impl FastestMatchmaker {
-    pub fn new(r: Receiver<Player>) -> Self {
+    pub fn new(rx: Receiver<Player>, stats: Stats) -> Self {
         Self {
-            receiver: r,
             games: vec![],
+            rx,
+            stats,
         }
     }
 }
@@ -32,10 +35,17 @@ impl Matchmaker for FastestMatchmaker {
         let mut game = Game::new();
 
         loop {
-            if let Ok(player) = self.receiver.recv() {
-                game.players.push(player);
+            if let Ok(player) = self.rx.recv() {
+                game.update_mmr_range(&player);
+
+                if game.team1.len() < 5 {
+                    game.team1.push(player);
+                } else {
+                    game.team2.push(player);
+                }
 
                 if player_num == 9 {
+                    game.calculate_stats();
                     self.games.push(game);
                     game = Game::new();
                 }
