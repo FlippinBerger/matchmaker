@@ -2,12 +2,16 @@ use std::sync::mpsc::{self, Sender, Receiver};
 use std::thread;
 
 use player::{Player, spawn_players};
-use crate::service::{FastestMatchmaker, Matchmaker};
+use crate::matchmaker::Matchmaker;
+use crate::matchmaker::{
+    fastmatchmaker::FastestMatchmaker,
+    mmrmatchmaker::MMRMatchmaker,
+};
 use crate::stats::Stats;
 
 pub mod game;
 pub mod player;
-pub mod service;
+pub mod matchmaker;
 pub mod stats;
 
 pub fn run() {
